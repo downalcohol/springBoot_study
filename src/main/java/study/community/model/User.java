@@ -7,7 +7,7 @@ public class User {
     private String token;
     private Long gmtCreate;
     private Long gmtModified;
-    public User() {
+    public User(Long id, String name, String token, long gmtCreate, long gmtModified) {
     }
 
     public User(String accountId, String name, String token, Long gmtCreate, Long gmtModified) {
