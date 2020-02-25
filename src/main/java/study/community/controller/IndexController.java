@@ -5,8 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import study.community.mapper.QuestionMapper;
 import study.community.mapper.UserMapper;
+import study.community.model.Question;
 import study.community.model.User;
 
 import javax.servlet.http.Cookie;
@@ -18,6 +21,7 @@ public class IndexController {
     @SuppressWarnings("all")
     @Autowired
     private UserMapper userMapper;
+
 
 
     @GetMapping("/")
@@ -39,4 +43,5 @@ public class IndexController {
         }
         return "index";
     }
+
 }
