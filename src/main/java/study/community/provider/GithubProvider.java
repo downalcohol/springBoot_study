@@ -1,11 +1,10 @@
 package study.community.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
-import study.community.dio.AccessTokenDTO;
-import study.community.dio.GithubUser;
+import study.community.dto.AccessTokenDTO;
+import study.community.dto.GithubUser;
 
 /**
  * 存放git需要以及提供的信息
