@@ -1,9 +1,12 @@
 package study.community.service;
 
-import org.apache.ibatis.annotations.Mapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
+import study.community.config.PageHelperConfig;
 import study.community.dto.QuestionDTO;
 import study.community.mapper.QuestionMapper;
 import study.community.mapper.UserMapper;
@@ -24,16 +27,27 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> list() {
-        List<QuestionDTO> questionDTOS= new ArrayList<>();
-        Question[] questions = questionMapper.all();
-        for (Question question:questions) {
+
+    PageInfo pageInfo = new PageInfo<>();
+
+    public List<QuestionDTO> list(int pageNum) {
+        List<QuestionDTO> questionDTOS = new ArrayList<>();
+        PageHelper.startPage(pageNum, 10);
+        List<Question> questions = questionMapper.all();
+        pageInfo = new PageInfo(questions);
+        for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);
+            BeanUtils.copyProperties(question, questionDTO);
             questionDTO.setUser(user);
             questionDTOS.add(questionDTO);
         }
         return questionDTOS;
     }
+
+
+    public PageInfo<Question> getPageInfo() {
+        return pageInfo;
+    }
+
 }

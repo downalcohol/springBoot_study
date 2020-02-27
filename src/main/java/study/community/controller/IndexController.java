@@ -1,5 +1,8 @@
 package study.community.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,7 +34,10 @@ public class IndexController {
 
 
     @GetMapping("/")
-    public String index(HttpServletRequest request,Model model){
+    public String index(
+            @RequestParam(value = "pageNum" ,defaultValue = "1")int pageNum,
+            HttpServletRequest request,
+            Model model){
         Cookie[] cookies = request.getCookies();
         //持久化用户登录
         //建立cookie，从数据库中通过token获取用户信息
@@ -47,9 +53,9 @@ public class IndexController {
                 }
             }
         }
-
-        List<QuestionDTO> questionDTOS = questionService.list();
+        List<QuestionDTO> questionDTOS = questionService.list(pageNum);
         model.addAttribute("questions",questionDTOS);
+        model.addAttribute("pageInfo",questionService.getPageInfo());
         return "index";
     }
 
