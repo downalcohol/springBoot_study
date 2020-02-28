@@ -1,11 +1,11 @@
 package study.community.mapper;
 
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import study.community.dto.QuestionDTO;
 import study.community.model.Question;
 
 import java.util.List;
@@ -20,6 +20,7 @@ public interface QuestionMapper {
     @Select("select * from question")
     List<Question> all();
 
-    @Select("select * from question")
-    PageInfo<Question> allToPageInfo();
+    @Select("select * from question where creator = #{id}")
+    List<Question> getById(Integer id);
+
 }

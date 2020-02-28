@@ -1,6 +1,5 @@
 package study.community.controller;
 
-import org.apache.tomcat.util.buf.UEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,19 +60,7 @@ public class PublishController {
         //持久化用户登录
         //建立cookie，从数据库中通过token获取用户信息
         User user = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    user = userMapper.findToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
-
+        user = (User) request.getSession().getAttribute("user");
         if (user == null){
             model.addAttribute("error", "用户未登录");
             return "publish";

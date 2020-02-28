@@ -1,19 +1,12 @@
 package study.community.controller;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import study.community.dto.QuestionDTO;
-import study.community.mapper.QuestionMapper;
 import study.community.mapper.UserMapper;
-import study.community.model.Question;
 import study.community.model.User;
 import study.community.service.QuestionService;
 
@@ -38,21 +31,7 @@ public class IndexController {
             @RequestParam(value = "pageNum" ,defaultValue = "1")int pageNum,
             HttpServletRequest request,
             Model model){
-        Cookie[] cookies = request.getCookies();
-        //持久化用户登录
-        //建立cookie，从数据库中通过token获取用户信息
-        if (cookies != null){
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")){
-                    String  token = cookie.getValue();
-                    User user = userMapper.findToken(token);
-                    if (user != null){
-                        request.getSession().setAttribute("user",user);
-                    }
-                    break;
-                }
-            }
-        }
+
         List<QuestionDTO> questionDTOS = questionService.list(pageNum);
         model.addAttribute("questions",questionDTOS);
         model.addAttribute("pageInfo",questionService.getPageInfo());
