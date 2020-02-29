@@ -10,6 +10,7 @@ import study.community.dto.GithubUser;
 import study.community.mapper.UserMapper;
 import study.community.model.User;
 import study.community.provider.GithubProvider;
+import study.community.service.UserService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,9 @@ public class AuthorizeController {
     @SuppressWarnings("all")
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Value("${github.client.id}")
     String client_id;
@@ -43,18 +47,21 @@ public class AuthorizeController {
         GithubUser githubUser = githubProvider.getUesr(accessToken);
         if(githubUser != null && githubUser.getId() != null){
             String token = UUID.randomUUID().toString();
-            User user = new User(
-                    String.valueOf(githubUser.getId()),
-                    githubUser.getName(),
-                    token,
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis(),
-                    githubUser.getAvatarUrl());
-            userMapper.insert(user);
+            userService.insertOrUpdate(githubUser,token);
             response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else {
             return "redirect:/";
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }

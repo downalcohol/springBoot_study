@@ -4,6 +4,7 @@ package study.community.mapper;
 import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import study.community.dto.QuestionDTO;
 import study.community.model.Question;
@@ -21,9 +22,9 @@ public interface QuestionMapper {
     List<Question> all();
 
     @Select("select * from question where creator = #{id}")
-    List<Question> getByCreatorId(Integer id);
+    List<Question> getByCreatorId(@Param("id")Integer id);
 
     @Select("select * from question where id = #{id}")
-    Question getById(Integer id);
+    Question getById(@Param("id") Integer id);
 
 }
