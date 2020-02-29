@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Studying springBoot</title>
+    <div th:replace="head::head"></div>
+</head>
+<body>
+<!--插入导航栏-->
+<div th:replace="navigation::nav"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12">
+            <h3 th:text="${question.getTitle()}"></h3>
+            <hr>
+            <div class="text-desc">
+                <h5 th:text="'作者：'+${question.getUser().getName()}+' | 发布时间：'+
+                ${#dates.format(question.getGmtCreate(),'yyyy MM dd hh:mm')}+' | 阅读量：'+
+                ${question.getViewCount()}"></h5>
+            </div>
+            <hr>
+            <div>
+                <span th:text="${question.getDescription()}"></span>
+            </div>
+            <hr>
+            <div class="glyphicons-edit">
+                <a th:href="@{'/publish/'+${question.getId()}}">编辑
+                <span class="glyphicon glyphicon-pencil"></span></a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-12">
+            <h4>发起人</h4>
+            <div class="media">
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object img-circle" th:src="${question.getUser().getAvatarUrl()}">
+                        <span th:text="${question.getUser().getName()}"></span>
+                    </a>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4>相关话题</h4>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

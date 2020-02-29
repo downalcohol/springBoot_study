@@ -27,3 +27,8 @@ body {
 .section {
     margin-top: 20px;
 }
+
+.glyphicons-edit{
+    font-size: 12px;
+    color: #999;
+}

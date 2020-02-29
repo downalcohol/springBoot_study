@@ -51,7 +51,7 @@ public class QuestionService {
     public List<QuestionDTO> listById(int pageNum, Integer id){
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         PageHelper.startPage(pageNum, 10);
-        List<Question> questions = questionMapper.getById(id);
+        List<Question> questions = questionMapper.getByCreatorId(id);
         pageInfo = new PageInfo(questions);
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
@@ -62,5 +62,14 @@ public class QuestionService {
         }
         return questionDTOS;
 
+    }
+
+    public QuestionDTO getDTOById(Integer id) {
+        Question question = questionMapper.getById(id);
+        User user = userMapper.findById(question.getCreator());
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question, questionDTO);
+        questionDTO.setUser(user);
+        return questionDTO;
     }
 }
