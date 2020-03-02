@@ -2,6 +2,7 @@ package study.community.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.omg.CORBA.SystemException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,5 +72,16 @@ public class QuestionService {
         BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setUser(user);
         return questionDTO;
+    }
+
+    public void insertOrUpdate(int questionId, String title, String description, Integer id, String tag) {
+        Question dbQuestion = questionMapper.getById(questionId);
+        Question question = new Question(title,description,System.currentTimeMillis(),System.currentTimeMillis(),id,tag);
+        question.setId(questionId);
+        if (dbQuestion != null){
+            questionMapper.update(question);
+        }else {
+            questionMapper.create(question);
+        }
     }
 }
