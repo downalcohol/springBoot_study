@@ -7,10 +7,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import study.community.dto.QuestionDTO;
+import study.community.exception.CustomizeErrorCode;
+import study.community.exception.CustomizeException;
+import study.community.mapper.QuestionExtMapper;
 import study.community.mapper.QuestionMapper;
 import study.community.mapper.UserMapper;
 import study.community.model.Question;
+import study.community.model.QuestionExample;
 import study.community.model.User;
+import study.community.model.UserExample;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,19 +31,30 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
+    @SuppressWarnings("all")
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     PageInfo pageInfo = new PageInfo<>();
+
+    public void incView(int id) {
+        Question question = questionMapper.selectByPrimaryKey(id);
+        questionExtMapper.incView(question);
+    }
 
     public List<QuestionDTO> list(int pageNum) {
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         PageHelper.startPage(pageNum, 10);
-        List<Question> questions = questionMapper.all();
+        List<Question> questions = questionMapper.selectByExample(new QuestionExample());
         pageInfo = new PageInfo(questions);
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            //System.out.println(question.getDescription());
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andIdEqualTo(question.getCreator());
+            List<User> users = userMapper.selectByExample(userExample);
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setUser(users.get(0));
             questionDTOS.add(questionDTO);
         }
         return questionDTOS;
@@ -49,16 +65,20 @@ public class QuestionService {
         return pageInfo;
     }
 
-    public List<QuestionDTO> listById(int pageNum, Integer id){
+    public List<QuestionDTO> listById(int pageNum, Integer id) {
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         PageHelper.startPage(pageNum, 10);
-        List<Question> questions = questionMapper.getByCreatorId(id);
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andCreatorEqualTo(id);
+        List<Question> questions = questionMapper.selectByExample(questionExample);
         pageInfo = new PageInfo(questions);
         for (Question question : questions) {
-            User user = userMapper.findById(question.getCreator());
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andIdEqualTo(question.getCreator());
+            List<User> users = userMapper.selectByExample(userExample);
             QuestionDTO questionDTO = new QuestionDTO();
             BeanUtils.copyProperties(question, questionDTO);
-            questionDTO.setUser(user);
+            questionDTO.setUser(users.get(0));
             questionDTOS.add(questionDTO);
         }
         return questionDTOS;
@@ -66,8 +86,11 @@ public class QuestionService {
     }
 
     public QuestionDTO getDTOById(Integer id) {
-        Question question = questionMapper.getById(id);
-        User user = userMapper.findById(question.getCreator());
+        Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null) {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setUser(user);
@@ -75,13 +98,26 @@ public class QuestionService {
     }
 
     public void insertOrUpdate(int questionId, String title, String description, Integer id, String tag) {
-        Question dbQuestion = questionMapper.getById(questionId);
-        Question question = new Question(title,description,System.currentTimeMillis(),System.currentTimeMillis(),id,tag);
-        question.setId(questionId);
-        if (dbQuestion != null){
-            questionMapper.update(question);
-        }else {
-            questionMapper.create(question);
+        Question dbQuestion = questionMapper.selectByPrimaryKey(questionId);
+        Question question = new Question();
+        //title,description,System.currentTimeMillis(),System.currentTimeMillis(),id,tag
+        question.setTitle(title);
+        question.setDescription(description);
+        question.setTag(tag);
+        if (dbQuestion != null) {
+            question.setGmtModified(question.getGmtCreate());
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.createCriteria()
+                    .andIdEqualTo(questionId);
+            int update = questionMapper.updateByExampleSelective(question, questionExample);
+            if (update != 1) {
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
+        } else {
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            question.setCreator(id);
+            questionMapper.insert(question);
         }
     }
 }

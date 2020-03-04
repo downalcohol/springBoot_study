@@ -109,8 +109,28 @@
                     <user>20181454</user>
                     <password>000613</password>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.4.200</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
+            <!--配置mybatis generator-->
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.h2database</groupId>
+                        <artifactId>h2</artifactId>
+                        <version>1.4.200</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
 

@@ -18,7 +18,7 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading"><b>[(${question.getTitle()})]</b></h4>
+                    <h4 class="media-heading" ><a th:href="@{'/question/'+${question.getId()}}"><b>[(${question.getTitle()})]</b></a></h4>
                     [(${question.getDescription()})]<br>
                     <span class="text-desc">
                         [(${question.getCommentCount()})]个回复<span>·</span>
