@@ -4,6 +4,15 @@
 <head>
     <title>Studying springBoot</title>
     <div th:replace="head::head"></div>
+    <script type="application/javascript">
+        window.onload = function () {
+            var closable = localStorage.getItem("closable");
+            if (closable == "true"){
+                window.close();
+                window.localStorage.removeItem("closable");
+            }
+        }
+    </script>
 </head>
 <body>
 <!--插入导航栏-->
