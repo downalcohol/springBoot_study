@@ -23,4 +23,11 @@
     view_count = view_count + 1
     where id = #{id}
   </update>
+
+  <update id="incCommentCount" parameterType="study.community.model.Question">
+    update QUESTION
+    set
+    COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+    where id = #{id}
+    </update>
 </mapper>

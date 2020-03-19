@@ -1,5 +1,6 @@
 package study.community.exception;
 
 public interface ICustomizeErrorCode {
-    String getMessage();
+    String getMessage() ;
+    Integer getCode();
 }

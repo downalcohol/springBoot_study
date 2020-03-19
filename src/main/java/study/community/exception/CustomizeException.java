@@ -2,18 +2,20 @@ package study.community.exception;
 
 public class CustomizeException extends RuntimeException {
 
-    private String errorMessage;
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
+    private String message;
+    private Integer code;
 
     public CustomizeException(ICustomizeErrorCode errorCode) {
-        this.errorMessage = errorCode.getMessage();
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
+    }
+
+    public Integer getCode() {
+        return code;
     }
 }
