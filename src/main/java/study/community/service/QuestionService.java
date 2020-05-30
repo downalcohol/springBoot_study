@@ -36,7 +36,7 @@ public class QuestionService {
 
     PageInfo pageInfo = new PageInfo<>();
 
-    public void incView(int id) {
+    public void incView(long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         questionExtMapper.incView(question);
     }
@@ -84,7 +84,7 @@ public class QuestionService {
 
     }
 
-    public QuestionDTO getDTOById(Integer id) {
+    public QuestionDTO getDTOById(long id) {
         Question question = questionMapper.selectByPrimaryKey(id);
         if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
@@ -96,14 +96,15 @@ public class QuestionService {
         return questionDTO;
     }
 
-    public void insertOrUpdate(int questionId, String title, String description, Integer id, String tag) {
-        Question dbQuestion = questionMapper.selectByPrimaryKey(questionId);
+    public void insertOrUpdate(long questionId, String title, String description, Integer id, String tag) {
         Question question = new Question();
         //title,description,System.currentTimeMillis(),System.currentTimeMillis(),id,tag
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        if (dbQuestion != null) {
+        question.setId(null);
+        if (questionId != -1) {
+            //更新问题
             question.setGmtModified(question.getGmtCreate());
             QuestionExample questionExample = new QuestionExample();
             questionExample.createCriteria()
@@ -113,10 +114,12 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         } else {
+            //创建问题
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
             question.setCreator(id);
             questionMapper.insert(question);
         }
     }
+
 }

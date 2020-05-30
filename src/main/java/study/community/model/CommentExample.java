@@ -116,7 +116,7 @@ public class CommentExample {
      *
      * @mbg.generated Tue Mar 17 16:39:34 GMT+08:00 2020
      */
-    public Criteria createCriteria() {
+    public  Criteria createCriteria() {
         Criteria criteria = createCriteriaInternal();
         if (oredCriteria.size() == 0) {
             oredCriteria.add(criteria);

@@ -34,10 +34,10 @@ public class PublishController {
         return "publish";
     }
 
-    @GetMapping("/publish/{id}")
+    @GetMapping("/publishExit/{id}")
     public String edit(@PathVariable("id")int id,
                        Model model){
-        QuestionDTO question = questionService.getDTOById(id);
+        QuestionDTO question = questionService.getDTOById( id);
         model.addAttribute("title",question.getTitle());
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
@@ -49,37 +49,34 @@ public class PublishController {
     public String doPublish(@RequestParam(value = "title",required = false) String title,
                             @RequestParam(value = "description",required = false) String description,
                             @RequestParam(value = "tag",required = false) String tag,
-                            @RequestParam(value = "questionId",required = false) int questionId,
+                            @RequestParam(value = "questionId",required = false) String id,
                             HttpServletRequest request,
                             Model model) {
+        long questionId = -1;
         model.addAttribute("title", title);
         model.addAttribute("description", description);
         model.addAttribute("tag", tag);
-
         if (title==null||title.equals("")){
-            model.addAttribute("error", "标题不能为空");
+            model.addAttribute("publishError", "标题不能为空");
             return "publish";
         }
 
         if (description==null||description.equals("")){
-            model.addAttribute("error", "问题内容不能为空");
+            model.addAttribute("publishError", "问题内容不能为空");
             return "publish";
         }
 
         if (tag==null||tag.equals("")){
-            model.addAttribute("error", "标签不能为空");
+            model.addAttribute("publishError", "标签不能为空");
             return "publish";
         }
 
-        Cookie[] cookies = request.getCookies();
-        //持久化用户登录
-        //建立cookie，从数据库中通过token获取用户信息
-        User user = null;
-        user = (User) request.getSession().getAttribute("user");
+        User user = (User) request.getSession().getAttribute("user");
         if (user == null){
-            model.addAttribute("error", "用户未登录");
+            model.addAttribute("publishError", "用户未登录");
             return "publish";
         }
+        if (!id.equals("")) questionId = Long.parseLong(id);
         questionService.insertOrUpdate(questionId,title,description,user.getId(),tag);
         return "redirect:/";
 

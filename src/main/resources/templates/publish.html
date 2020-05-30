@@ -30,7 +30,7 @@
                     <input type="text" class="form-control" id="tag" name="tag"
                            th:value="${tag}" placeholder="输入标签 以逗号分隔">
                     <div>
-                        <div class="alert alert-danger" th:if="${error} != null" th:text="${error}"></div>
+                        <div class="alert alert-danger" th:if="${publishError != null}" th:text="${publishError}"></div>
                         <button type="submit" class="btn btn-publish btn-success">发布</button>
                     </div>
                 </div>

@@ -23,14 +23,15 @@ public class CustomizeExceptionHandler {
             //返回JSON
             if (e instanceof CustomizeException){
                 return ResultDTO.errorOf((CustomizeException) e);
-            }else {
+            }
+            else {
                 return ResultDTO.errorOf(CustomizeErrorCode.SYS_ERROR);
             }
         }else {
             if (e instanceof CustomizeException){
                 model.addAttribute("errorMessage",((CustomizeException) e).getMessage());
             }else {
-                model.addAttribute("errorMessage",CustomizeErrorCode.SYS_ERROR.toString());
+                model.addAttribute("errorMessage",CustomizeErrorCode.SYS_ERROR.getMessage());
             }
             return new ModelAndView("error");
         }

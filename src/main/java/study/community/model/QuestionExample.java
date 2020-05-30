@@ -204,7 +204,7 @@ public class QuestionExample {
             return (Criteria) this;
         }
 
-        public Criteria andIdEqualTo(Integer value) {
+        public Criteria andIdEqualTo(long value) {
             addCriterion("ID =", value, "id");
             return (Criteria) this;
         }
